@@ -9,10 +9,17 @@
   body {
     margin:0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
+    background-size: 600% 600%;
+    animation: gradientBG 15s ease infinite;
+  }
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
   /* HEADER */
@@ -44,7 +51,7 @@
 
   /* BANNER */
   #banner {
-    background: linear-gradient(135deg,#ffffff,#f0f0f0);
+    background: rgba(255,255,255,0.8);
     margin: 20px auto;
     padding: 50px 25px;
     border-radius: 20px;
@@ -60,12 +67,13 @@
   /* FORM */
   #projectForm {
     display:none;
-    background: #fff;
+    background: rgba(255,255,255,0.9);
     margin: 20px auto;
     padding: 20px;
     max-width: 400px;
     border-radius: 15px;
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    backdrop-filter: blur(4px);
   }
   #projectForm input, #projectForm textarea, #projectForm button {
     width:100%;
@@ -121,13 +129,14 @@
   @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
   #modalContent {
-    background:#fff;
+    background: rgba(255,255,255,0.95);
     padding:25px;
     border-radius:20px;
     max-width:600px;
     width:90%;
     position: relative;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(4px);
   }
   #closeModal {
     position:absolute;
@@ -200,7 +209,7 @@
 </div>
 
 <footer>
-  Bu web site kodlanarak yapılmıştır • Domain ve Sunucu: Google Firebase • Sahibi: lattesiber
+  Bu web site kodlanarak yapılmıştır • Domain:github pages Sunucu: Google Firebase • Sahibi: lattesiber ©2025 TÜM HAKLARI SAKLIDIR
 </footer>
 
 <script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js"></script>
