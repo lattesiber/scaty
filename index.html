@@ -191,7 +191,7 @@
   <h3>Yeni Proje</h3>
   <input type="text" id="username" placeholder="Kullanıcı Adı">
   <input type="text" id="title" placeholder="Proje Başlığı">
-  <textarea id="embed" placeholder="Embed Kodu"></textarea>
+  <textarea id="yerleştirme" placeholder="yerleştirme kodu"></textarea>
   <button onclick="createProject()">Oluştur</button>
   <button onclick="hideForm()">İptal</button>
 </div>
@@ -203,7 +203,7 @@
   <div id="modalContent">
     <button id="closeModal" onclick="closeModal()">Kapat</button>
     <h2 id="modalTitle"></h2>
-    <div id="modalEmbed"></div>
+    <div id="modalyerleştirme"></div>
     <button id="likeButton"></button> <span id="likeCount"></span> beğeni
   </div>
 </div>
@@ -232,7 +232,7 @@ const db = firebase.database();
 const projectsDiv = document.getElementById("projects");
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
-const modalEmbed = document.getElementById("modalEmbed");
+const modalEmbed = document.getElementById("modalyerleştirme");
 const likeButton = document.getElementById("likeButton");
 const likeCount = document.getElementById("likeCount");
 
@@ -269,7 +269,7 @@ db.ref('projects').on('value', snapshot=>{
 
 function openModal(project,key){
   modalTitle.innerText = project.title;
-  modalEmbed.innerHTML = project.embed;
+  modalEmbed.innerHTML = project.yerleştirme;
   likeCount.innerText = project.likes;
   likeButton.innerText="Beğen";
   let liked=false;
@@ -292,6 +292,7 @@ function closeModal(){
 </script>
 </body>
 </html>
+
 
 
 
