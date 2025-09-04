@@ -14,28 +14,11 @@
     background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
     background-size: 600% 600%;
     animation: gradientBG 15s ease infinite;
-    transition: background 0.5s, color 0.5s;
   }
   @keyframes gradientBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-  }
-
-  body.dark {
-    background: linear-gradient(270deg, #0f0f0f, #1a1a1a, #0f0f0f);
-    color: #eee;
-  }
-  body.dark #banner,
-  body.dark #projectForm,
-  body.dark .project-card,
-  body.dark #modalContent {
-    background: rgba(30,30,30,0.95);
-    color: #eee;
-  }
-  body.dark footer {
-    background: rgba(255,255,255,0.1);
-    color: #ccc;
   }
 
   header {
@@ -46,53 +29,50 @@
     justify-content: space-between;
     align-items: center;
     backdrop-filter: blur(5px);
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
-  header h1 { margin:0; font-size:1.8rem; }
-  header .buttons { display:flex; gap:10px; }
-
+  header h1 { margin:0; font-size: 1.8rem; }
   header button {
-    background: #ff6600; border:none; padding:10px 18px; border-radius:8px; color:white; cursor:pointer;
-    font-weight: bold; transition: transform 0.3s, background 0.3s;
+    background: #ff6600;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
   }
-  header button:hover { background:#e65c00; transform: scale(1.05); }
-  #themeToggle { background:#333; }
-  #themeToggle:hover { background:#111; }
-
-  #banner {
-    background: rgba(255,255,255,0.85);
-    margin: 20px auto; padding:50px 25px; border-radius:20px; text-align:center; max-width:650px;
-    box-shadow:0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s;
-  }
-  #banner:hover { transform: scale(1.02); }
-  #banner h1 { font-size:3rem; color:#6a0dad; margin:0; }
-  #banner p { font-size:1.1rem; margin-top:10px; color:#333; }
-
-  /* Proje sayısı */
-  #projectCount {
-    font-size:1rem;
-    font-weight:bold;
-    margin-top:15px;
-    color:#444;
-  }
-  body.dark #projectCount { color:#bbb; }
 
   #projectForm {
-    display:none; background: rgba(255,255,255,0.95); margin: 20px auto; padding: 20px; max-width:400px;
-    border-radius:15px; box-shadow:0 8px 20px rgba(0,0,0,0.2); backdrop-filter: blur(4px);
+    display:none;
+    background: rgba(255,255,255,0.9);
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
   }
   #projectForm input, #projectForm textarea, #projectForm button {
-    width:100%; margin:8px 0; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:0.95rem;
+    width:100%;
+    margin:8px 0;
+    padding:10px;
+    border-radius: 8px;
+    border:1px solid #ccc;
   }
   #projectForm button {
-    background:#6a0dad; color:white; border:none; cursor:pointer; font-weight:bold; transition:0.3s;
+    background:#6a0dad;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
   }
-  #projectForm button:hover { background:#570bb0; transform: scale(1.05); }
 
   #projects {
-    display:flex; flex-wrap:wrap; gap:20px; padding:20px; justify-content:center; flex:1;
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    padding:20px;
+    justify-content:center;
+    flex:1;
   }
   .project-card {
     background: rgba(255,255,255,0.95);
@@ -100,56 +80,53 @@
     padding:15px;
     width:220px;
     text-align:center;
-    box-shadow:0 6px 20px rgba(0,0,0,0.15);
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
     cursor:pointer;
-    transition: transform 0.4s, box-shadow 0.4s;
-  }
-  .project-card:hover {
-    transform: translateY(-10px) rotateX(5deg) rotateY(-5deg);
-    box-shadow:0 12px 30px rgba(0,0,0,0.25);
   }
 
   #modal {
-    display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-    background:rgba(0,0,0,0.7); justify-content:center; align-items:center;
-    animation: fadeIn 0.3s;
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
   }
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
   #modalContent {
     background: rgba(255,255,255,0.95);
     padding:25px;
     border-radius:20px;
     max-width:600px;
     width:90%;
-    position:relative;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    animation: zoomIn 0.4s ease;
-  }
-  @keyframes zoomIn {
-    from { transform: scale(0.7); opacity:0; }
-    to { transform: scale(1); opacity:1; }
-  }
-
-  #closeModal {
-    position:absolute; top:15px; right:15px;
-    background:red; color:white; border:none;
-    padding:6px 12px; border-radius:8px; cursor:pointer;
-    transition: transform 0.2s;
-  }
-  #closeModal:hover { transform: scale(1.1); }
-
-  #likeButton {
-    background:#ff4081; color:white; border:none;
-    padding:10px 16px; cursor:pointer; border-radius:8px;
-    margin-top:15px; font-weight:bold; transition:0.3s;
     position: relative;
   }
-  #likeButton.liked { background:#e53981; }
+  #closeModal {
+    position:absolute;
+    top:15px;
+    right:15px;
+    background:red;
+    color:white;
+    border:none;
+    padding:6px 12px;
+    border-radius:8px;
+    cursor:pointer;
+  }
+  #likeButton {
+    background:#ff4081;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    cursor:pointer;
+    border-radius:8px;
+    margin-top:15px;
+    font-weight:bold;
+  }
+
   footer {
     background: rgba(0,0,0,0.6);
-    color:white; text-align:center;
-    padding:12px; font-size:0.9rem;
-    backdrop-filter: blur(4px);
+    color:white;
+    text-align:center;
+    padding:12px;
+    font-size:0.9rem;
   }
 </style>
 </head>
@@ -157,19 +134,11 @@
 
 <header>
   <h1>SCATY</h1>
-  <div class="buttons">
-    <button onclick="showForm()">Proje Ekle</button>
-    <button id="themeToggle" onclick="toggleTheme()">🌙</button>
-  </div>
+  <button onclick="showForm()">Proje Ekle</button>
 </header>
 
-<div id="banner">
-  <h1>SCATY</h1>
-  <p>Scratch projelerini paylaşın!</p>
-  <div id="projectCount">Toplam Proje: 0</div>
-</div>
-
 <div id="projectForm">
+  <h3>Yeni Proje</h3>
   <input type="text" id="username" placeholder="Kullanıcı Adı">
   <input type="text" id="title" placeholder="Proje Başlığı">
   <textarea id="yerlestirme" placeholder="Yerleştirme Kodu"></textarea>
@@ -183,17 +152,18 @@
   <div id="modalContent">
     <button id="closeModal" onclick="closeModal()">Kapat</button>
     <h2 id="modalTitle"></h2>
-    <div id="modalYerlestirme"></div>
-    <button id="likeButton"></button> <span id="likeCount"></span> beğeni
+    <div id="modalyerlestirme"></div>
+    <button id="likeButton">Beğen</button> <span id="likeCount"></span> beğeni
   </div>
 </div>
 
 <footer>
-  Bu web site kodlanarak yapılmıştır • Domain: github pages • Sunucu: Google Firebase • Sahibi: lattesiber ©2025
+  Bu web site kodlanarak yapılmıştır • Domain: GitHub Pages • Sunucu: Google Firebase • Sahibi: lattesiber ©2025 TÜM HAKLARI SAKLIDIR
 </footer>
 
-<script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
@@ -206,16 +176,15 @@ const firebaseConfig = {
   measurementId: "G-LLYXBZZX0X"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const projectsDiv = document.getElementById("projects");
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
-const modalYerlestirme = document.getElementById("modalYerlestirme");
+const modalEmbed = document.getElementById("modalyerlestirme");
 const likeButton = document.getElementById("likeButton");
 const likeCount = document.getElementById("likeCount");
-const projectCount = document.getElementById("projectCount");
 
 function showForm(){ document.getElementById("projectForm").style.display="block"; }
 function hideForm(){ document.getElementById("projectForm").style.display="none"; }
@@ -224,10 +193,11 @@ function createProject(){
   const username = document.getElementById("username").value.trim();
   const title = document.getElementById("title").value.trim();
   const yerlestirme = document.getElementById("yerlestirme").value.trim();
-  if(!username || !title || !yerlestirme){ alert("Tüm alanları doldurun!"); return; }
+
+  if(!username||!title||!yerlestirme){ alert("Tüm alanları doldurun!"); return; }
 
   const newProjectRef = db.ref('projects').push();
-  newProjectRef.set({username, title, yerlestirme, likes:0}, ()=> {
+  newProjectRef.set({username,title,yerlestirme,likes:0}, ()=>{
     hideForm();
     document.getElementById("username").value="";
     document.getElementById("title").value="";
@@ -238,11 +208,9 @@ function createProject(){
 db.ref('projects').on('value', snapshot=>{
   projectsDiv.innerHTML="";
   const data = snapshot.val();
-  let count = 0;
   if(data){
     Object.keys(data).forEach(key=>{
       const project = data[key];
-      count++;
       const div = document.createElement("div");
       div.className="project-card";
       div.innerHTML=`<h4>${project.title}</h4><p>@${project.username}</p>`;
@@ -250,47 +218,22 @@ db.ref('projects').on('value', snapshot=>{
       projectsDiv.appendChild(div);
     });
   }
-  projectCount.innerText = "Toplam Proje: " + count;
 });
 
 function openModal(project,key){
   modalTitle.innerText = project.title;
-  modalYerlestirme.innerHTML = project.yerlestirme;
+  modalEmbed.innerHTML = project.yerlestirme;
   likeCount.innerText = project.likes;
-  likeButton.innerText="Beğen";
-  likeButton.classList.remove("liked");
-
-  let liked=false;
   likeButton.onclick=()=>{
-    if(!liked){
-      db.ref('projects/'+key).update({likes:project.likes+1});
-      likeButton.classList.add("liked");
-      liked=true;
-    } else {
-      db.ref('projects/'+key).update({likes:project.likes});
-      likeButton.classList.remove("liked");
-      liked=false;
-    }
-  }
+    db.ref('projects/'+key).update({likes: project.likes+1});
+  };
   modal.style.display="flex";
 }
 
 function closeModal(){
   modal.style.display="none";
-  modalYerlestirme.innerHTML="";
-}
-
-function toggleTheme(){
-  document.body.classList.toggle("dark");
-  const btn = document.getElementById("themeToggle");
-  if(document.body.classList.contains("dark")){
-    btn.textContent = "☀️";
-  } else {
-    btn.textContent = "🌙";
-  }
+  modalEmbed.innerHTML="";
 }
 </script>
-
 </body>
 </html>
-
