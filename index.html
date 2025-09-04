@@ -5,13 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SCATY</title>
 <style>
-  body { font-family: Arial; background: #f2f2f2; padding: 20px; }
-  h1 { text-align: center; }
-  #projects div { background: white; margin: 10px; padding: 10px; border-radius: 8px; cursor: pointer; }
-  #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); justify-content:center; align-items:center; }
-  #modalContent { background:white; padding:20px; border-radius:10px; max-width:500px; width:90%; position:relative; }
-  #closeModal { position:absolute; top:10px; right:10px; background:red; color:white; border:none; padding:5px 10px; cursor:pointer; border-radius:5px; }
-  #likeButton { background:#ff4081; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:5px; margin-top:10px; font-weight:bold; }
+  body {
+    font-family: Arial; 
+    margin:0; padding:20px; 
+    background: linear-gradient(270deg, #6a0dad, #ff66b3); 
+    background-size: 600% 600%; 
+    animation: gradientBG 15s ease infinite;
+  }
+  @keyframes gradientBG {
+    0% {background-position:0% 50%;}
+    50% {background-position:100% 50%;}
+    100% {background-position:0% 50%;}
+  }
+  h1 { text-align:center; color:white; }
+  #projects div {
+    background: rgba(255,255,255,0.9); 
+    margin:10px; padding:10px; 
+    border-radius:8px; cursor:pointer;
+  }
+  #modal {
+    display:none; 
+    position:fixed; top:0; left:0; width:100%; height:100%; 
+    background: rgba(0,0,0,0.7); 
+    justify-content:center; align-items:center;
+  }
+  #modalContent {
+    background:white; padding:20px; border-radius:10px; 
+    max-width:500px; width:90%; position:relative;
+  }
+  #closeModal {
+    position:absolute; top:10px; right:10px; 
+    background:red; color:white; border:none; padding:5px 10px; 
+    cursor:pointer; border-radius:5px;
+  }
+  #likeButton {
+    background:#ff4081; color:white; border:none; 
+    padding:8px 12px; cursor:pointer; border-radius:5px; 
+    margin-top:10px; font-weight:bold;
+  }
+  #projectForm input, #projectForm textarea, #projectForm button {
+    width:100%; margin:5px 0; padding:8px; border-radius:5px; border:none;
+  }
 </style>
 </head>
 <body>
@@ -19,10 +53,10 @@
 <h1>SCATY</h1>
 
 <div id="projectForm">
-  <input type="text" id="username" placeholder="Kullanıcı Adı"><br>
-  <input type="text" id="title" placeholder="Proje Başlığı"><br>
-  <textarea id="embed" placeholder="Embed Kodu"></textarea><br>
-  <button onclick="addProject()">Projeyi Kaydet</button>
+  <input type="text" id="username" placeholder="Kullanıcı Adı">
+  <input type="text" id="title" placeholder="Proje Başlığı">
+  <textarea id="embed" placeholder="Embed Kodu"></textarea>
+  <button id="addProjectBtn">Projeyi Kaydet</button>
 </div>
 
 <div id="projects"></div>
@@ -30,107 +64,63 @@
 <!-- Modal -->
 <div id="modal">
   <div id="modalContent">
-    <button id="closeModal" onclick="closeModal()">Kapat</button>
+    <button id="closeModal">Kapat</button>
     <h2 id="modalTitle"></h2>
     <div id="modalEmbed"></div>
     <button id="likeButton"></button> <span id="likeCount"></span> beğeni
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js"></script>
 
-// 1️⃣ Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
-  authDomain: "scaty-9bd07.firebaseapp.com",
-  databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "scaty-9bd07",
-  storageBucket: "scaty-9bd07.firebasestorage.app",
-  messagingSenderId: "649442785955",
-  appId: "1:649442785955:web:cb7405c5c0bd88907e9d16",
-  measurementId: "G-LLYXBZZX0X"
-};
-
-// 2️⃣ Firebase başlat
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-// DOM
-const projectsDiv = document.getElementById("projects");
-const modal = document.getElementById("modal");
-const modalTitle = document.getElementById("modalTitle");
-const modalEmbed = document.getElementById("modalEmbed");
-const likeButton = document.getElementById("likeButton");
-const likeCount = document.getElementById("likeCount");
-
-// 3️⃣ Proje ekleme
-window.addProject = function() {
-  const username = document.getElementById("username").value;
-  const title = document.getElementById("title").value;
-  const embed = document.getElementById("embed").value;
-
-  if(!username || !title || !embed){
-    alert("Tüm alanları doldurun!");
-    return;
-  }
-
-  const newProjectRef = push(ref(db, 'projects'));
-  set(newProjectRef, { username, title, embed, likes: 0 })
-    .then(() => {
-      alert("Proje kaydedildi!");
-      document.getElementById("username").value = "";
-      document.getElementById("title").value = "";
-      document.getElementById("embed").value = "";
-    });
-};
-
-// 4️⃣ Firebase’den projeleri çek ve göster
-onValue(ref(db, 'projects'), (snapshot) => {
-  projectsDiv.innerHTML = "";
-  const data = snapshot.val();
-  if(data){
-    Object.keys(data).forEach(key => {
-      const project = data[key];
-      const div = document.createElement("div");
-      div.innerHTML = `<strong>${project.title}</strong> by ${project.username} <br> Likes: ${project.likes}`;
-      div.onclick = () => openModal(project, key);
-      projectsDiv.appendChild(div);
-    });
-  }
-});
-
-// 5️⃣ Modal açma + beğeni toggle
-function openModal(project, key){
-  modalTitle.innerText = project.title;
-  modalEmbed.innerHTML = project.embed;
-  likeCount.innerText = project.likes;
-  likeButton.innerText = "Beğen";
-
-  let liked = false;
-
-  likeButton.onclick = () => {
-    if(!liked){
-      update(ref(db, 'projects/' + key), { likes: project.likes + 1 });
-      liked = true;
-    } else {
-      update(ref(db, 'projects/' + key), { likes: project.likes });
-      liked = false;
-    }
+<script>
+  // 1️⃣ Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
+    authDomain: "scaty-9bd07.firebaseapp.com",
+    databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "scaty-9bd07",
+    storageBucket: "scaty-9bd07.firebasedestorage.app",
+    messagingSenderId: "649442785955",
+    appId: "1:649442785955:web:cb7405c5c0bd88907e9d16",
+    measurementId: "G-LLYXBZZX0X"
   };
 
-  modal.style.display = "flex";
-}
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-// 6️⃣ Modal kapatma
-window.closeModal = function(){
-  modal.style.display = "none";
-  modalEmbed.innerHTML = "";
-}
-</script>
+  const projectsDiv = document.getElementById("projects");
+  const modal = document.getElementById("modal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalEmbed = document.getElementById("modalEmbed");
+  const likeButton = document.getElementById("likeButton");
+  const likeCount = document.getElementById("likeCount");
+  const closeModalBtn = document.getElementById("closeModal");
+  const addProjectBtn = document.getElementById("addProjectBtn");
 
-</body>
-</html>
+  // 2️⃣ Proje ekleme
+  addProjectBtn.onclick = () => {
+    const username = document.getElementById("username").value.trim();
+    const title = document.getElementById("title").value.trim();
+    const embed = document.getElementById("embed").value.trim();
+
+    if(!username || !title || !embed){ alert("Tüm alanları doldurun!"); return; }
+
+    const newProjectRef = db.ref('projects').push();
+    newProjectRef.set({ username, title, embed, likes: 0 }).then(() => {
+      document.getElementById("username").value="";
+      document.getElementById("title").value="";
+      document.getElementById("embed").value="";
+    });
+  };
+
+  // 3️⃣ Projeleri çek ve göster
+  db.ref('projects').on('value', snapshot => {
+    projectsDiv.innerHTML = "";
+    const data = snapshot.val();
+    if(data){
+
 
 
