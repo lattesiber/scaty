@@ -1,101 +1,109 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SCATY — Projeler & Mesajlar</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCATY</title>
 <style>
-  :root{
-    --accent1:#6a0dad; /* mor */
-    --accent2:#1e90ff; /* mavi */
-    --card-bg: rgba(255,255,255,0.95);
-  }
-  body{
+  body {
     margin:0;
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-    min-height:100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
+    background-size: 600% 600%;
+    animation: gradientBG 15s ease infinite;
+  }
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  header {
+    background: rgba(106, 13, 173, 0.85);
+    color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  header h1 { margin:0; font-size: 1.8rem; }
+  header button {
+    background: #ff6600;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+  }
+
+  #projectForm {
+    display:none;
+    background: rgba(255,255,255,0.9);
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+  }
+  #projectForm input, #projectForm textarea, #projectForm button {
+    width:100%; margin:8px 0; padding:10px;
+    border-radius:8px; border:1px solid #ccc;
+  }
+  #projectForm button {
+    background:#6a0dad; color:white; border:none; cursor:pointer;
+  }
+
+  #projects {
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    padding:20px;
+    justify-content:center;
+  }
+  .project-card {
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+    padding:15px;
+    width:250px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  /* Mesajlar bölümü */
+  .messages-area {
+    display:none;
+    margin-top:10px;
+    border-top:1px dashed #ccc;
+    padding-top:10px;
+
     display:flex;
     flex-direction:column;
-    background: linear-gradient(270deg,var(--accent1),var(--accent2),var(--accent1));
-    background-size:600% 600%;
-    animation: gradientBG 15s ease infinite;
-    color:#222;
+    max-height:220px;
   }
-  @keyframes gradientBG{
-    0%{background-position:0% 50%}
-    50%{background-position:100% 50%}
-    100%{background-position:0% 50%}
-  }
-
-  header{
+  .messages-list {
+    flex:1;
+    overflow-y:auto;
     display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:14px 20px;
-    background: rgba(106,13,173,0.85);
-    color:#fff;
-    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+    flex-direction:column;
+    gap:8px;
+    padding-right:6px;
   }
-  header h1{margin:0;font-size:1.4rem;letter-spacing:1px}
-  header .controls{display:flex;gap:10px;align-items:center}
-
-  button, .btn {
-    background:#ff6600;border:none;color:white;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600;
+  .message-form {
+    display:flex;
+    gap:6px;
+    margin-top:8px;
   }
-  button.small { padding:6px 8px; font-size:0.9rem }
-  button.ghost { background:transparent;border:1px solid rgba(255,255,255,0.2); color:#fff }
+  .message-form input { flex:1; padding:6px; }
+  .message-form button { padding:6px 12px; }
 
-  main{flex:1; padding:18px; display:flex; flex-direction:column; gap:18px}
-  #banner{
-    max-width:900px; margin:0 auto; background:var(--card-bg); padding:32px; border-radius:14px;
-    box-shadow:0 8px 22px rgba(0,0,0,0.12); text-align:center;
-  }
-  #banner h2{margin:0;color:var(--accent1); font-size:2.2rem}
-  #banner p{margin:8px 0 0;color:#555}
-
-  /* form */
-  #projectForm{ display:none; max-width:520px; margin:0 auto; background:var(--card-bg); padding:16px; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,0.12)}
-  #projectForm input, #projectForm textarea { width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #ddd; font-size:0.95rem }
-  #projectForm .row{ display:flex; gap:8px }
-  #projectForm .row input{ flex:1 }
-
-  /* projects grid */
-  #projects{ display:flex; flex-wrap:wrap; gap:18px; justify-content:center; padding-bottom:40px }
-  .project-card{
-    width:260px;
-    background:var(--card-bg);
-    border-radius:12px;
+  footer {
+    background: rgba(0,0,0,0.6);
+    color:white;
+    text-align:center;
     padding:12px;
-    box-shadow:0 8px 18px rgba(0,0,0,0.12);
-    display:flex; flex-direction:column; gap:8px;
-  }
-  .project-head{ display:flex; justify-content:space-between; align-items:center; gap:8px }
-  .project-title{ font-weight:700; font-size:1rem; color:var(--accent1) }
-  .project-user{ color:#666; font-size:0.9rem }
-
-  .project-actions{ display:flex; gap:8px; align-items:center; margin-top:6px }
-  .likes { font-weight:700; color:#333; }
-
-  /* messages area inside card (collapsed by default) */
-  .messages-area{ display:none; margin-top:10px; border-top:1px dashed #eee; padding-top:10px }
-  .messages-list{ display:flex; flex-direction:column; gap:8px; max-height:150px; overflow:auto; padding-right:6px }
-  .message-box{ background:#fff; padding:8px; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.06); font-size:0.95rem }
-  .message-box .meta{ font-size:0.8rem; color:#666; margin-bottom:4px }
-  .message-form{ display:flex; gap:8px; margin-top:8px }
-  .message-form input{ flex:1; padding:8px; border-radius:8px; border:1px solid #ddd }
-  .message-form button{ padding:8px 10px; border-radius:8px; }
-
-  /* modal */
-  #modal{ display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:50 }
-  #modalContent{ width:90%; max-width:760px; background:var(--card-bg); padding:20px; border-radius:12px; box-shadow:0 20px 40px rgba(0,0,0,0.3) }
-  #modalContent .embed-wrap{ margin-top:12px; }
-
-  footer{ text-align:center; padding:12px; color:#fff; background:rgba(0,0,0,0.25) }
-
-  /* small screens */
-  @media(max-width:700px){
-    .project-card{ width:90% }
-    #projectForm{ width:90% }
+    font-size:0.9rem;
   }
 </style>
 </head>
@@ -103,303 +111,119 @@
 
 <header>
   <h1>SCATY</h1>
-  <div class="controls">
-    <button onclick="showForm()">Proje Ekle</button>
-    <button class="small" onclick="scrollToProjects()">Projeleri Göster</button>
-  </div>
+  <button onclick="showForm()">Proje Ekle</button>
 </header>
 
-<main>
-  <div id="banner">
-    <h2>SCATY</h2>
-    <p>Scratch projelerini paylaş, projelere yorum bırak ve beğeni ver — her şey gerçek zamanlı.</p>
-  </div>
-
-  <!-- form -->
-  <div id="projectForm" aria-hidden="true">
-    <h3>Yeni Proje Ekle</h3>
-    <input id="pf_username" placeholder="Scratch Kullanıcı İsmi" />
-    <input id="pf_title" placeholder="Proje İsmi" />
-    <textarea id="pf_yerlestirme" rows="4" placeholder="Yerleştirme Kodu (embed HTML veya iframe kodu)"></textarea>
-    <div style="display:flex; gap:8px; margin-top:8px;">
-      <button onclick="createProject()">Oluştur</button>
-      <button onclick="hideForm()" style="background:#aaa">İptal</button>
-    </div>
-  </div>
-
-  <!-- projects -->
-  <section id="projects" aria-live="polite"></section>
-</main>
-
-<!-- modal for embed -->
-<div id="modal" role="dialog" aria-modal="true">
-  <div id="modalContent">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <strong id="modalTitle">Başlık</strong>
-      <div>
-        <button onclick="closeModal()" style="background:#ff4d4d;padding:6px 10px;border-radius:8px;color:#fff;border:none">Kapat</button>
-      </div>
-    </div>
-    <div class="embed-wrap" id="modalEmbed"></div>
-    <div style="margin-top:12px;"> <button class="btn" id="modalLikeBtn">Beğen</button> <span id="modalLikeCount" style="font-weight:700;margin-left:8px"></span> </div>
-  </div>
+<div id="projectForm">
+  <h3>Yeni Proje</h3>
+  <input type="text" id="username" placeholder="Kullanıcı Adı">
+  <input type="text" id="title" placeholder="Proje Başlığı">
+  <textarea id="embed" placeholder="Yerleştirme kodu"></textarea>
+  <button onclick="createProject()">Oluştur</button>
+  <button onclick="hideForm()">İptal</button>
 </div>
 
-<footer>Bu web site • Domain: GitHub Pages • Sunucu: Google Firebase • Sahibi: lattesiber ©2025</footer>
+<div id="projects"></div>
+
+<footer>
+  Bu web site kodlanarak yapılmıştır • Domain: GitHub Pages • Sunucu: Firebase • Sahibi: lattesiber ©2025
+</footer>
 
 <!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
-/* ====== CONFIG - kendi Firebase bilgilerini buraya koy (seninkiyle uyumlu) ====== */
 const firebaseConfig = {
   apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
   authDomain: "scaty-9bd07.firebaseapp.com",
   databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "scaty-9bd07",
-  storageBucket: "scaty-9bd07.firebasestorage.app",
+  storageBucket: "scaty-9bd07.appspot.com",
   messagingSenderId: "649442785955",
   appId: "1:649442785955:web:cb7405c5c0bd88907e9d16"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* ====== Helpers & state ====== */
-const projectsRoot = db.ref('projects');
-const projectsContainer = document.getElementById('projects');
-const projectForm = document.getElementById('projectForm');
-const pf_username = document.getElementById('pf_username');
-const pf_title = document.getElementById('pf_title');
-const pf_yerlestirme = document.getElementById('pf_yerlestirme');
+const projectsDiv = document.getElementById("projects");
 
-const modal = document.getElementById('modal');
-const modalTitle = document.getElementById('modalTitle');
-const modalEmbed = document.getElementById('modalEmbed');
-const modalLikeBtn = document.getElementById('modalLikeBtn');
-const modalLikeCount = document.getElementById('modalLikeCount');
+function showForm(){ document.getElementById("projectForm").style.display="block"; }
+function hideForm(){ document.getElementById("projectForm").style.display="none"; }
 
-let currentModalProjectKey = null;
-
-/* message listeners map to avoid duplicate listeners */
-let messageListeners = {}; // key => ref
-
-/* utility: get liked state from localStorage */
-function getLikedMap(){
-  try {
-    return JSON.parse(localStorage.getItem('likedProjects') || '{}');
-  } catch(e){ return {}; }
-}
-function setLikedMap(map){ localStorage.setItem('likedProjects', JSON.stringify(map)); }
-
-/* show/hide form */
-function showForm(){ projectForm.style.display='block'; projectForm.setAttribute('aria-hidden','false'); pf_username.focus(); }
-function hideForm(){ projectForm.style.display='none'; projectForm.setAttribute('aria-hidden','true'); pf_username.value=''; pf_title.value=''; pf_yerlestirme.value=''; }
-
-/* create project */
 function createProject(){
-  const username = pf_username.value.trim();
-  const title = pf_title.value.trim();
-  const yerlestirme = pf_yerlestirme.value.trim();
-  if(!username || !title || !yerlestirme){ alert('Lütfen tüm alanları doldur!'); return; }
-
-  const newRef = projectsRoot.push();
-  newRef.set({
-    username, title, yerlestirme, likes: 0
-  }, err => {
-    if(err) alert('Kaydetme hatası: ' + err);
-    else hideForm();
-  });
+  const username = document.getElementById("username").value;
+  const title = document.getElementById("title").value;
+  const embed = document.getElementById("embed").value;
+  if(!username||!title||!embed){ alert("Tüm alanları doldurun!"); return; }
+  const newProjectRef = db.ref('projects').push();
+  newProjectRef.set({username,title,embed,likes:0});
+  hideForm();
+  document.getElementById("username").value="";
+  document.getElementById("title").value="";
+  document.getElementById("embed").value="";
 }
 
-/* scroll helper */
-function scrollToProjects(){ projectsContainer.scrollIntoView({behavior:'smooth'}); }
-
-/* render projects list - uses on('value') to keep in sync */
-projectsRoot.on('value', snapshot=>{
-  // before re-rendering, detach previous message listeners
-  for(const k in messageListeners){
-    try { messageListeners[k].off(); } catch(e) {}
-  }
-  messageListeners = {};
-
-  projectsContainer.innerHTML = '';
+db.ref('projects').on('value', snapshot=>{
+  projectsDiv.innerHTML="";
   const data = snapshot.val();
-  if(!data) { projectsContainer.innerHTML = '<p style="color:white; text-align:center">Henüz proje yok — ekleyin!</p>'; return; }
-
-  Object.keys(data).reverse().forEach(key=>{
-    const project = data[key];
-    const card = document.createElement('article');
-    card.className = 'project-card';
-    card.dataset.key = key;
-
-    // head
-    const head = document.createElement('div'); head.className='project-head';
-    const titleEl = document.createElement('div'); titleEl.className='project-title'; titleEl.textContent = project.title;
-    const userEl = document.createElement('div'); userEl.className='project-user'; userEl.textContent = '@' + project.username;
-    head.appendChild(titleEl); head.appendChild(userEl);
-
-    // like + actions
-    const actions = document.createElement('div'); actions.className='project-actions';
-    const likeBtn = document.createElement('button'); likeBtn.className='btn small'; likeBtn.textContent = 'Beğen';
-    const likesSpan = document.createElement('span'); likesSpan.className = 'likes'; likesSpan.textContent = (project.likes||0) + ' ';
-    // messages toggle
-    const msgToggle = document.createElement('button'); msgToggle.className='small'; msgToggle.textContent = 'Mesajları Göster';
-
-    // append
-    actions.appendChild(likeBtn);
-    actions.appendChild(likesSpan);
-    actions.appendChild(msgToggle);
-
-    // messages area (hidden)
-    const messagesArea = document.createElement('div'); messagesArea.className = 'messages-area';
-    const messagesList = document.createElement('div'); messagesList.className = 'messages-list';
-    const messageForm = document.createElement('div'); messageForm.className = 'message-form';
-    const msgName = document.createElement('input'); msgName.placeholder = 'Scratch İsmin';
-    const msgText = document.createElement('input'); msgText.placeholder = 'Mesaj yaz...';
-    const msgSend = document.createElement('button'); msgSend.className='btn small'; msgSend.textContent = 'Gönder';
-    messageForm.appendChild(msgName); messageForm.appendChild(msgText); messageForm.appendChild(msgSend);
-    messagesArea.appendChild(messagesList);
-    messagesArea.appendChild(messageForm);
-
-    // wire up like button (toggle using localStorage + transaction)
-    likeBtn.onclick = ()=>{
-      const likedMap = getLikedMap();
-      const liked = !!likedMap[key];
-      // transaction to increment/decrement safely
-      const likesRef = projectsRoot.child(key).child('likes');
-      likesRef.transaction(function(current){
-        if(!current) current = 0;
-        if(!liked) {
-          // like
-          likedMap[key] = true;
-          setLikedMap(likedMap);
-          return current + 1;
-        } else {
-          // unlike
-          likedMap[key] = false;
-          setLikedMap(likedMap);
-          return Math.max(0, current - 1);
-        }
-      }, function(err, committed, snapshot){
-        if(err) console.error('Transaction error', err);
-        // UI will update via projectsRoot.on('value')
-      });
-    };
-
-    // wire up modal open to view embed
-    card.addEventListener('dblclick', ()=>{ // double click to open modal (or you can add a button)
-      openModalForProject(key, project);
+  if(data){
+    Object.keys(data).forEach(key=>{
+      const project = data[key];
+      const div = document.createElement("div");
+      div.className="project-card";
+      div.innerHTML=`
+        <h3>${project.title}</h3>
+        <p>@${project.username}</p>
+        <div>${project.embed}</div>
+        <button onclick="likeProject('${key}',${project.likes})">❤️ ${project.likes}</button>
+        <button onclick="toggleMessages('${key}')">Mesajlar</button>
+        <div class="messages-area" id="messages-${key}">
+          <div class="messages-list" id="messages-list-${key}"></div>
+          <div class="message-form">
+            <input id="msg-user-${key}" placeholder="Scratch ismin">
+            <input id="msg-text-${key}" placeholder="Mesaj yaz...">
+            <button onclick="sendMessage('${key}')">Gönder</button>
+          </div>
+        </div>
+      `;
+      projectsDiv.appendChild(div);
+      loadMessages(key);
     });
-
-    // message toggle
-    let messagesVisible = false;
-    msgToggle.onclick = ()=>{
-      messagesVisible = !messagesVisible;
-      messagesArea.style.display = messagesVisible ? 'block' : 'none';
-      if(messagesVisible){
-        // attach listener for this project's messages if not already
-        if(!messageListeners[key]){
-          const msgsRef = projectsRoot.child(key).child('messages');
-          const handler = msgsRef.on('value', snapMsgs=>{
-            messagesList.innerHTML = '';
-            const msgs = snapMsgs.val();
-            if(msgs){
-              // show messages in time order
-              Object.keys(msgs).forEach(mid=>{
-                const m = msgs[mid];
-                const box = document.createElement('div'); box.className='message-box';
-                const meta = document.createElement('div'); meta.className='meta'; meta.textContent = '@' + m.user + ' • ' + new Date(m.time).toLocaleString();
-                box.appendChild(meta);
-                const txt = document.createElement('div'); txt.textContent = m.text;
-                box.appendChild(txt);
-                messagesList.appendChild(box);
-              });
-              messagesList.scrollTop = messagesList.scrollHeight;
-            } else {
-              messagesList.innerHTML = '<div style="color:#666">Henüz mesaj yok.</div>';
-            }
-          });
-          // store to remove later
-          messageListeners[key] = { ref: msgsRef, on: msgsRef.on.bind(msgsRef), off: function(){ msgsRef.off(); } };
-        }
-      } else {
-        // optional: could detach listener to save bandwidth; for simplicity we keep listener but hide UI
-      }
-    };
-
-    // send message
-    msgSend.onclick = ()=>{
-      const user = msgName.value.trim();
-      const text = msgText.value.trim();
-      if(!user || !text){ alert('Scratch ismi ve mesaj gerekli'); return; }
-      const msgsRef = projectsRoot.child(key).child('messages');
-      const newMsg = msgsRef.push();
-      newMsg.set({ user, text, time: Date.now() }, err=>{
-        if(err) alert('Mesaj gönderilemedi: ' + err);
-        else msgText.value = '';
-      });
-    };
-
-    // update likesSpan live using a small listener just for likes (optional)
-    const likesListenerRef = projectsRoot.child(key).child('likes');
-    likesListenerRef.on('value', s => {
-      likesSpan.textContent = (s.val()||0) + ' ';
-    });
-
-    // assemble card
-    card.appendChild(head);
-    card.appendChild(actions);
-    card.appendChild(messagesArea);
-
-    // quick click to open modal? we used dblclick; also add explicit button
-    const viewBtn = document.createElement('button'); viewBtn.className='small'; viewBtn.textContent='Projeyi Aç';
-    viewBtn.onclick = ()=> openModalForProject(key, project);
-    actions.appendChild(viewBtn);
-
-    projectsContainer.appendChild(card);
-  });
-});
-
-/* open modal for a given project */
-function openModalForProject(key, project){
-  currentModalProjectKey = key;
-  modalTitle.textContent = project.title + ' — @' + project.username;
-  // show yerlestirme/embed safely
-  modalEmbed.innerHTML = project.yerlestirme || '(Yerleştirme yok)';
-  modalLikeCount.textContent = (project.likes||0);
-  // modal like button: use transaction and localStorage like mapping
-  modalLikeBtn.onclick = ()=> {
-    const likedMap = getLikedMap();
-    const liked = !!likedMap[key];
-    const likesRef = projectsRoot.child(key).child('likes');
-    likesRef.transaction(function(current){
-      if(!current) current = 0;
-      if(!liked){
-        likedMap[key] = true; setLikedMap(likedMap);
-        return current + 1;
-      } else {
-        likedMap[key] = false; setLikedMap(likedMap);
-        return Math.max(0, current - 1);
-      }
-    });
-  };
-
-  // show modal
-  modal.style.display = 'flex';
-}
-
-/* close modal when clicking outside */
-modal.addEventListener('click', (e)=>{
-  if(e.target === modal) closeModal();
-});
-function closeModal(){ modal.style.display = 'none'; modalEmbed.innerHTML=''; currentModalProjectKey = null; }
-
-/* cleanup before unload: detach message listeners */
-window.addEventListener('beforeunload', ()=>{
-  for(const k in messageListeners){
-    try{ messageListeners[k].ref.off(); }catch(e){}
   }
 });
+
+function likeProject(key,likes){
+  db.ref('projects/'+key).update({likes:likes+1});
+}
+
+function toggleMessages(key){
+  const area=document.getElementById("messages-"+key);
+  area.style.display = (area.style.display==="flex") ? "none" : "flex";
+}
+
+function sendMessage(key){
+  const user=document.getElementById("msg-user-"+key).value;
+  const text=document.getElementById("msg-text-"+key).value;
+  if(!user||!text){ alert("İsim ve mesaj gerekli!"); return; }
+  const msgRef=db.ref("messages/"+key).push();
+  msgRef.set({user,text,timestamp:Date.now()});
+  document.getElementById("msg-text-"+key).value="";
+}
+
+function loadMessages(key){
+  db.ref("messages/"+key).on("value",snap=>{
+    const list=document.getElementById("messages-list-"+key);
+    list.innerHTML="";
+    const data=snap.val();
+    if(data){
+      Object.values(data).forEach(m=>{
+        const p=document.createElement("p");
+        p.textContent=`${m.user}: ${m.text}`;
+        list.appendChild(p);
+      });
+    }
+  });
+}
 </script>
 </body>
 </html>
