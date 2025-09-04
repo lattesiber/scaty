@@ -1,151 +1,132 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCATY</title>
-<style>
-  body {
-    margin:0;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
-    background-size: 600% 600%;
-    animation: gradientBG 15s ease infinite;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  header { background: rgba(0,0,0,0.6); color:white; padding:15px; text-align:center; }
-  #projectForm { display:none; background:white; padding:15px; margin:15px auto; width:300px; border-radius:10px; }
-  #projects { display:flex; flex-wrap:wrap; gap:15px; padding:15px; justify-content:center; }
-  .project-card { background:white; padding:15px; border-radius:10px; width:200px; cursor:pointer; }
-  #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; }
-  #modalContent { background:white; padding:20px; border-radius:10px; max-width:500px; width:90%; position:relative; }
-  #closeModal { position:absolute; top:10px; right:10px; background:red; color:white; border:none; padding:5px 10px; cursor:pointer; }
-  #likeButton { background:#ff4081; color:white; border:none; padding:8px 14px; border-radius:5px; margin-top:10px; cursor:pointer; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCATY Mesajlaşma</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
+      background-size: 600% 600%;
+      animation: gradientBG 15s ease infinite;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      color: white;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header {
+      background: rgba(0,0,0,0.6);
+      padding: 15px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    #chatBox {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+    .msg {
+      background: rgba(255,255,255,0.2);
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    .msg strong { color: #ffcc00; }
+    #form {
+      display: flex;
+      background: rgba(0,0,0,0.7);
+      padding: 10px;
+    }
+    #username, #message {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 8px;
+      font-size: 1rem;
+    }
+    #username { width: 20%; }
+    #message { flex: 1; }
+    #sendBtn {
+      background: #ff4081;
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #sendBtn:hover { background: #e53981; }
+  </style>
 </head>
 <body>
 
-<header>
-  <h1>SCATY</h1>
-  <button onclick="showForm()">Proje Ekle</button>
-</header>
+<header>💬 SCATY Mesajlaşma</header>
 
-<div id="projectForm">
-  <h3>Yeni Proje</h3>
-  <input type="text" id="username" placeholder="Kullanıcı Adı"><br>
-  <input type="text" id="title" placeholder="Proje Başlığı"><br>
-  <textarea id="yerlestirme" placeholder="Yerleştirme Kodu"></textarea><br>
-  <button onclick="createProject()">Oluştur</button>
-  <button onclick="hideForm()">İptal</button>
-</div>
+<div id="chatBox"></div>
 
-<div id="projects"></div>
-
-<!-- Modal -->
-<div id="modal">
-  <div id="modalContent">
-    <button id="closeModal" onclick="closeModal()">Kapat</button>
-    <h2 id="modalTitle"></h2>
-    <div id="modalEmbed"></div>
-    <button id="likeButton">Beğen</button> <span id="likeCount"></span> beğeni
-  </div>
+<div id="form">
+  <input type="text" id="username" placeholder="Scratch İsmin">
+  <input type="text" id="message" placeholder="Mesaj yaz...">
+  <button id="sendBtn">Gönder</button>
 </div>
 
 <!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
-  authDomain: "scaty-9bd07.firebaseapp.com",
-  databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "scaty-9bd07",
-  storageBucket: "scaty-9bd07.appspot.com",
-  messagingSenderId: "649442785955",
-  appId: "1:649442785955:web:cb7405c5c0bd88907e9d16"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-const projectsDiv = document.getElementById("projects");
-const modal = document.getElementById("modal");
-const modalTitle = document.getElementById("modalTitle");
-const modalEmbed = document.getElementById("modalEmbed");
-const likeButton = document.getElementById("likeButton");
-const likeCount = document.getElementById("likeCount");
-
-function showForm(){ document.getElementById("projectForm").style.display="block"; }
-function hideForm(){ document.getElementById("projectForm").style.display="none"; }
-
-function createProject(){
-  const username = document.getElementById("username").value;
-  const title = document.getElementById("title").value;
-  const yrl = document.getElementById("yerlestirme").value;
-  if(!username || !title || !yrl){ alert("Tüm alanları doldurun!"); return; }
-  const newRef = db.ref('projects').push();
-  newRef.set({ username, title, yrl, likes:0 });
-  hideForm();
-  document.getElementById("username").value="";
-  document.getElementById("title").value="";
-  document.getElementById("yerlestirme").value="";
-}
-
-// Firebase’den projeleri çek
-db.ref('projects').on('value', snap=>{
-  projectsDiv.innerHTML="";
-  const data = snap.val();
-  if(data){
-    Object.keys(data).forEach(key=>{
-      const p = data[key];
-      const div = document.createElement("div");
-      div.className="project-card";
-      div.innerHTML=`<h4>${p.title}</h4><p>@${p.username}</p>`;
-      div.onclick=()=>openModal(p,key);
-      projectsDiv.appendChild(div);
-    });
-  }
-});
-
-function openModal(project,key){
-  modalTitle.innerText = project.title;
-  modalEmbed.innerHTML = project.yrl;
-  likeCount.innerText = project.likes;
-
-  // LocalStorage’da kontrol
-  let likedProjects = JSON.parse(localStorage.getItem("likedProjects") || "{}");
-  let liked = likedProjects[key] === true;
-  likeButton.innerText = liked ? "Beğeniyi Geri Al" : "Beğen";
-
-  likeButton.onclick = ()=>{
-    let newLikes = project.likes;
-    if(!liked){
-      newLikes++;
-      liked=true;
-      likedProjects[key]=true;
-      likeButton.innerText="Beğeniyi Geri Al";
-    } else {
-      newLikes--;
-      liked=false;
-      likedProjects[key]=false;
-      likeButton.innerText="Beğen";
-    }
-    db.ref('projects/'+key).update({likes:newLikes});
-    localStorage.setItem("likedProjects", JSON.stringify(likedProjects));
+  // Firebase config (senin veritabanın)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
+    authDomain: "scaty-9bd07.firebaseapp.com",
+    databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "scaty-9bd07",
+    storageBucket: "scaty-9bd07.firebasestorage.app",
+    messagingSenderId: "649442785955",
+    appId: "1:649442785955:web:cb7405c5c0bd88907e9d16"
   };
 
-  modal.style.display="flex";
-}
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-function closeModal(){
-  modal.style.display="none";
-  modalEmbed.innerHTML="";
-}
+  const chatBox = document.getElementById("chatBox");
+  const usernameInput = document.getElementById("username");
+  const messageInput = document.getElementById("message");
+  const sendBtn = document.getElementById("sendBtn");
+
+  // Mesaj gönder
+  sendBtn.onclick = () => {
+    const username = usernameInput.value.trim();
+    const message = messageInput.value.trim();
+    if(!username || !message) return alert("İsim ve mesaj boş olamaz!");
+
+    const newMsgRef = db.ref("messages").push();
+    newMsgRef.set({
+      user: username,
+      text: message,
+      time: Date.now()
+    });
+
+    messageInput.value = "";
+  };
+
+  // Mesajları canlı dinle
+  db.ref("messages").on("child_added", snapshot => {
+    const msg = snapshot.val();
+    const div = document.createElement("div");
+    div.className = "msg";
+    div.innerHTML = `<strong>@${msg.user}:</strong> ${msg.text}`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight; // otomatik kaydır
+  });
 </script>
+
 </body>
 </html>
-
