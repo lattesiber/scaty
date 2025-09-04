@@ -242,14 +242,14 @@ function hideForm(){ document.getElementById("projectForm").style.display="none"
 function createProject(){
   const username = document.getElementById("username").value;
   const title = document.getElementById("title").value;
-  const embed = document.getElementById("embed").value;
+  const embed = document.getElementById("yerleştirme").value;
   if(!username||!title||!embed){ alert("Tüm alanları doldurun!"); return; }
   const newProjectRef = db.ref('projects').push();
-  newProjectRef.set({username,title,embed,likes:0});
+  newProjectRef.set({username,title,yerleştirme,likes:0});
   hideForm();
   document.getElementById("username").value="";
   document.getElementById("title").value="";
-  document.getElementById("embed").value="";
+  document.getElementById("yerleştirme").value="";
 }
 
 db.ref('projects').on('value', snapshot=>{
@@ -292,6 +292,7 @@ function closeModal(){
 </script>
 </body>
 </html>
+
 
 
 
