@@ -7,7 +7,7 @@
 <style>
   body {
     margin:0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: Arial, sans-serif;
     background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
     background-size: 600% 600%;
     animation: gradientBG 15s ease infinite;
@@ -17,16 +17,14 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-  header { background:rgba(0,0,0,0.5); color:#fff; padding:15px; display:flex; justify-content:space-between; }
-  header button { background:#ff6600; border:none; padding:8px 14px; border-radius:8px; color:white; cursor:pointer; }
-  #projectForm { display:none; background:#fff; margin:20px auto; padding:20px; max-width:400px; border-radius:10px; }
-  #projectForm input, #projectForm textarea, #projectForm button { width:100%; margin:8px 0; padding:10px; border-radius:6px; border:1px solid #ccc; }
-  #projects { display:flex; flex-wrap:wrap; gap:15px; padding:20px; justify-content:center; }
-  .project-card { background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.2); cursor:pointer; width:200px; text-align:center; }
+  header { background: rgba(0,0,0,0.6); color:white; padding:15px; text-align:center; }
+  #projectForm { display:none; background:white; padding:15px; margin:15px auto; width:300px; border-radius:10px; }
+  #projects { display:flex; flex-wrap:wrap; gap:15px; padding:15px; justify-content:center; }
+  .project-card { background:white; padding:15px; border-radius:10px; width:200px; cursor:pointer; }
   #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; }
-  #modalContent { background:#fff; padding:20px; border-radius:12px; width:90%; max-width:500px; position:relative; }
-  #closeModal { position:absolute; top:10px; right:10px; background:red; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; }
-  #likeButton { background:#ff4081; border:none; padding:8px 14px; border-radius:6px; color:#fff; cursor:pointer; }
+  #modalContent { background:white; padding:20px; border-radius:10px; max-width:500px; width:90%; position:relative; }
+  #closeModal { position:absolute; top:10px; right:10px; background:red; color:white; border:none; padding:5px 10px; cursor:pointer; }
+  #likeButton { background:#ff4081; color:white; border:none; padding:8px 14px; border-radius:5px; margin-top:10px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -38,27 +36,24 @@
 
 <div id="projectForm">
   <h3>Yeni Proje</h3>
-  <input type="text" id="username" placeholder="Kullanıcı Adı">
-  <input type="text" id="title" placeholder="Proje Başlığı">
-  <textarea id="yerlestirme" placeholder="Yerleştirme Kodu"></textarea>
+  <input type="text" id="username" placeholder="Kullanıcı Adı"><br>
+  <input type="text" id="title" placeholder="Proje Başlığı"><br>
+  <textarea id="yerlestirme" placeholder="Yerleştirme Kodu"></textarea><br>
   <button onclick="createProject()">Oluştur</button>
   <button onclick="hideForm()">İptal</button>
 </div>
 
 <div id="projects"></div>
 
+<!-- Modal -->
 <div id="modal">
   <div id="modalContent">
     <button id="closeModal" onclick="closeModal()">Kapat</button>
     <h2 id="modalTitle"></h2>
-    <div id="modalyerlestirme"></div>
+    <div id="modalEmbed"></div>
     <button id="likeButton">Beğen</button> <span id="likeCount"></span> beğeni
   </div>
 </div>
-
-<footer style="text-align:center; padding:10px; background:rgba(0,0,0,0.5); color:#fff;">
-  Bu web site Github Pages + Firebase ile yapılmıştır ©2025 lattesiber
-</footer>
 
 <!-- Firebase v8 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
@@ -69,7 +64,7 @@ const firebaseConfig = {
   authDomain: "scaty-9bd07.firebaseapp.com",
   databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "scaty-9bd07",
-  storageBucket: "scaty-9bd07.firebasestorage.app",
+  storageBucket: "scaty-9bd07.appspot.com",
   messagingSenderId: "649442785955",
   appId: "1:649442785955:web:cb7405c5c0bd88907e9d16"
 };
@@ -80,7 +75,7 @@ const db = firebase.database();
 const projectsDiv = document.getElementById("projects");
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
-const modalEmbed = document.getElementById("modalyerlestirme");
+const modalEmbed = document.getElementById("modalEmbed");
 const likeButton = document.getElementById("likeButton");
 const likeCount = document.getElementById("likeCount");
 
@@ -88,32 +83,29 @@ function showForm(){ document.getElementById("projectForm").style.display="block
 function hideForm(){ document.getElementById("projectForm").style.display="none"; }
 
 function createProject(){
-  const username = document.getElementById("username").value.trim();
-  const title = document.getElementById("title").value.trim();
-  const yerlestirme = document.getElementById("yerlestirme").value.trim();
-
-  if(!username||!title||!yerlestirme){ alert("Tüm alanları doldurun!"); return; }
-
-  const newProjectRef = db.ref('projects').push();
-  newProjectRef.set({username,title,yerlestirme,likes:0})
-    .then(()=>{
-      hideForm();
-      document.getElementById("username").value="";
-      document.getElementById("title").value="";
-      document.getElementById("yerlestirme").value="";
-    });
+  const username = document.getElementById("username").value;
+  const title = document.getElementById("title").value;
+  const yrl = document.getElementById("yerlestirme").value;
+  if(!username || !title || !yrl){ alert("Tüm alanları doldurun!"); return; }
+  const newRef = db.ref('projects').push();
+  newRef.set({ username, title, yrl, likes:0 });
+  hideForm();
+  document.getElementById("username").value="";
+  document.getElementById("title").value="";
+  document.getElementById("yerlestirme").value="";
 }
 
-db.ref('projects').on('value', snapshot=>{
+// Firebase’den projeleri çek
+db.ref('projects').on('value', snap=>{
   projectsDiv.innerHTML="";
-  const data = snapshot.val();
+  const data = snap.val();
   if(data){
     Object.keys(data).forEach(key=>{
-      const project = data[key];
+      const p = data[key];
       const div = document.createElement("div");
       div.className="project-card";
-      div.innerHTML=`<h4>${project.title}</h4><p>@${project.username}</p>`;
-      div.onclick=()=>openModal(project,key);
+      div.innerHTML=`<h4>${p.title}</h4><p>@${p.username}</p>`;
+      div.onclick=()=>openModal(p,key);
       projectsDiv.appendChild(div);
     });
   }
@@ -121,13 +113,31 @@ db.ref('projects').on('value', snapshot=>{
 
 function openModal(project,key){
   modalTitle.innerText = project.title;
-  modalEmbed.innerHTML = project.yerlestirme;
-  likeCount.innerText = project.likes || 0;
-  likeButton.onclick=()=>{
-    db.ref('projects/'+key+'/likes').transaction(likes=>{
-      return (likes||0)+1;
-    });
+  modalEmbed.innerHTML = project.yrl;
+  likeCount.innerText = project.likes;
+
+  // LocalStorage’da kontrol
+  let likedProjects = JSON.parse(localStorage.getItem("likedProjects") || "{}");
+  let liked = likedProjects[key] === true;
+  likeButton.innerText = liked ? "Beğeniyi Geri Al" : "Beğen";
+
+  likeButton.onclick = ()=>{
+    let newLikes = project.likes;
+    if(!liked){
+      newLikes++;
+      liked=true;
+      likedProjects[key]=true;
+      likeButton.innerText="Beğeniyi Geri Al";
+    } else {
+      newLikes--;
+      liked=false;
+      likedProjects[key]=false;
+      likeButton.innerText="Beğen";
+    }
+    db.ref('projects/'+key).update({likes:newLikes});
+    localStorage.setItem("likedProjects", JSON.stringify(likedProjects));
   };
+
   modal.style.display="flex";
 }
 
@@ -138,3 +148,4 @@ function closeModal(){
 </script>
 </body>
 </html>
+
