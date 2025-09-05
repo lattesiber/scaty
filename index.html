@@ -18,6 +18,22 @@
       50% {background-position: 100% 50%;}
       100% {background-position: 0% 50%;}
     }
+    header {
+      background: rgba(0,0,0,0.6);
+      padding: 10px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    header h1 {margin:0;}
+    header button {
+      padding:8px 16px;
+      background:#ff6600;
+      border:none;
+      border-radius:8px;
+      color:white;
+      cursor:pointer;
+    }
     .container { padding: 20px; }
     .project-card {
       background: rgba(0,0,0,0.5);
@@ -28,6 +44,29 @@
       transition: 0.3s;
     }
     .project-card:hover { background: rgba(0,0,0,0.7); }
+    /* FORM */
+    #projectForm {
+      display:none;
+      background: rgba(255,255,255,0.9);
+      color:black;
+      padding:20px;
+      border-radius:12px;
+      max-width:400px;
+      margin:20px auto;
+    }
+    #projectForm input, #projectForm textarea, #projectForm button {
+      width:100%;
+      margin:8px 0;
+      padding:10px;
+      border-radius:6px;
+      border:1px solid #ccc;
+    }
+    #projectForm button {
+      background:#6a11cb;
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
     /* Modal */
     #modal {
       display:none;
@@ -91,6 +130,20 @@
   </style>
 </head>
 <body>
+  <header>
+    <h1>Scaty</h1>
+    <button onclick="showForm()">Proje Ekle</button>
+  </header>
+
+  <div id="projectForm">
+    <h3>Yeni Proje</h3>
+    <input type="text" id="username" placeholder="Kullanıcı Adı">
+    <input type="text" id="title" placeholder="Proje Başlığı">
+    <textarea id="yerleştirme" placeholder="Yerleştirme kodu"></textarea>
+    <button onclick="createProject()">Kaydet</button>
+    <button onclick="hideForm()">İptal</button>
+  </div>
+
   <div class="container">
     <h2>Scaty Projeleri</h2>
     <div id="projects"></div>
@@ -116,7 +169,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script>
-    // Firebase config seninkiyle aynı olmalı
     const firebaseConfig = {
       apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
       authDomain: "scaty-9bd07.firebaseapp.com",
@@ -142,13 +194,28 @@
 
     let currentProjectKey = null;
 
-    // Projeleri listele
-    db.ref("projects").on("value", snapshot=>{
+    function showForm(){ document.getElementById("projectForm").style.display="block"; }
+    function hideForm(){ document.getElementById("projectForm").style.display="none"; }
+
+    function createProject(){
+      const username=document.getElementById("username").value;
+      const title=document.getElementById("title").value;
+      const yerleştirme=document.getElementById("yerleştirme").value;
+      if(!username||!title||!yerleştirme){ alert("Tüm alanları doldurun!"); return; }
+      const newRef=db.ref("projects").push();
+      newRef.set({username,title,yerleştirme,likes:0});
+      hideForm();
+      document.getElementById("username").value="";
+      document.getElementById("title").value="";
+      document.getElementById("yerleştirme").value="";
+    }
+
+    db.ref("projects").on("value", snap=>{
       projectsDiv.innerHTML="";
-      const data = snapshot.val();
+      const data=snap.val();
       if(data){
         Object.keys(data).forEach(key=>{
-          const p = data[key];
+          const p=data[key];
           let div=document.createElement("div");
           div.className="project-card";
           div.innerHTML=`<h3>${p.title}</h3><p>@${p.username}</p>`;
@@ -158,23 +225,20 @@
       }
     });
 
-    // Modal aç
     function openModal(project,key){
-      currentProjectKey = key;
+      currentProjectKey=key;
       modalTitle.innerText=project.title;
       modalUser.innerText=project.username;
       modalEmbed.innerHTML=project.yerleştirme;
       modal.style.display="flex";
 
-      // beğeni canlı
-      db.ref("projects/"+key+"/likes").on("value", snap=>{
-        likeCount.innerText = snap.val() || 0;
+      db.ref("projects/"+key+"/likes").on("value", s=>{
+        likeCount.innerText=s.val()||0;
       });
 
-      // mesajları canlı çek
-      db.ref("messages/"+key).on("value", snap=>{
+      db.ref("messages/"+key).on("value", s=>{
         messagesBox.innerHTML="";
-        const msgs=snap.val();
+        const msgs=s.val();
         if(msgs){
           Object.values(msgs).forEach(m=>{
             let p=document.createElement("p");
@@ -204,9 +268,7 @@
       if(text==="") return;
       let user=prompt("Scratch kullanıcı adın:");
       if(!user) return;
-      db.ref("messages/"+currentProjectKey).push({
-        user,text
-      });
+      db.ref("messages/"+currentProjectKey).push({user,text});
       messageInput.value="";
     }
   </script>
