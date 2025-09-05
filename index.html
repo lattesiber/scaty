@@ -1,229 +1,214 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SCATY</title>
-<style>
-  body {
-    margin:0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(270deg, #6a0dad, #1e90ff, #6a0dad);
-    background-size: 600% 600%;
-    animation: gradientBG 15s ease infinite;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  header {
-    background: rgba(106, 13, 173, 0.85);
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
-  header h1 { margin:0; font-size: 1.8rem; }
-  header button {
-    background: #ff6600;
-    border:none;
-    padding:10px 18px;
-    border-radius:8px;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-  }
-
-  #projectForm {
-    display:none;
-    background: rgba(255,255,255,0.9);
-    margin: 20px auto;
-    padding: 20px;
-    max-width: 400px;
-    border-radius: 15px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-  }
-  #projectForm input, #projectForm textarea, #projectForm button {
-    width:100%; margin:8px 0; padding:10px;
-    border-radius:8px; border:1px solid #ccc;
-  }
-  #projectForm button {
-    background:#6a0dad; color:white; border:none; cursor:pointer;
-  }
-
-  #projects {
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-    padding:20px;
-    justify-content:center;
-  }
-  .project-card {
-    background: rgba(255,255,255,0.95);
-    border-radius: 15px;
-    padding:15px;
-    width:250px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-  }
-
-  /* Mesajlar bölümü */
-  .messages-area {
-    display:none;
-    margin-top:10px;
-    border-top:1px dashed #ccc;
-    padding-top:10px;
-
-    display:flex;
-    flex-direction:column;
-    max-height:220px;
-  }
-  .messages-list {
-    flex:1;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    padding-right:6px;
-  }
-  .message-form {
-    display:flex;
-    gap:6px;
-    margin-top:8px;
-  }
-  .message-form input { flex:1; padding:6px; }
-  .message-form button { padding:6px 12px; }
-
-  footer {
-    background: rgba(0,0,0,0.6);
-    color:white;
-    text-align:center;
-    padding:12px;
-    font-size:0.9rem;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scaty</title>
+  <style>
+    body {
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(270deg, #6a11cb, #2575fc);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      color: white;
+    }
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .container { padding: 20px; }
+    .project-card {
+      background: rgba(0,0,0,0.5);
+      border-radius: 12px;
+      padding: 15px;
+      margin: 10px 0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .project-card:hover { background: rgba(0,0,0,0.7); }
+    /* Modal */
+    #modal {
+      display:none;
+      position:fixed;
+      top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.7);
+      justify-content:center;
+      align-items:center;
+    }
+    #modalContent {
+      background:white;
+      color:black;
+      border-radius:12px;
+      padding:20px;
+      max-width:600px;
+      width:90%;
+      max-height:90%;
+      overflow-y:auto;
+      position:relative;
+    }
+    #closeModal {
+      position:absolute;top:10px;right:10px;
+      background:red;color:white;border:none;
+      padding:6px 12px;border-radius:8px;
+      cursor:pointer;
+    }
+    #likeButton {
+      background:#ff4081;
+      color:white;
+      border:none;
+      padding:8px 14px;
+      cursor:pointer;
+      border-radius:8px;
+      margin-top:10px;
+      font-weight:bold;
+    }
+    .messages {
+      margin-top:15px;
+      background:#f1f1f1;
+      padding:10px;
+      border-radius:8px;
+      max-height:200px;
+      overflow-y:auto;
+    }
+    .message-input {
+      display:flex;
+      gap:5px;
+      margin-top:8px;
+    }
+    .message-input input {
+      flex:1;padding:6px;
+    }
+    .message-input button {
+      padding:6px 12px;
+      border:none;
+      background:#2575fc;
+      color:white;
+      border-radius:6px;
+      cursor:pointer;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Scaty Projeleri</h2>
+    <div id="projects"></div>
+  </div>
 
-<header>
-  <h1>SCATY</h1>
-  <button onclick="showForm()">Proje Ekle</button>
-</header>
+  <!-- Modal -->
+  <div id="modal">
+    <div id="modalContent">
+      <button id="closeModal" onclick="closeModal()">Kapat</button>
+      <h2 id="modalTitle"></h2>
+      <p><strong>Kullanıcı:</strong> <span id="modalUser"></span></p>
+      <div id="modalEmbed"></div>
+      <button id="likeButton">Beğen</button> <span id="likeCount">0</span> beğeni
+      <h3>Mesajlar</h3>
+      <div class="messages" id="messagesBox"></div>
+      <div class="message-input">
+        <input type="text" id="messageInput" placeholder="Mesaj yaz...">
+        <button onclick="sendMessage()">Gönder</button>
+      </div>
+    </div>
+  </div>
 
-<div id="projectForm">
-  <h3>Yeni Proje</h3>
-  <input type="text" id="username" placeholder="Kullanıcı Adı">
-  <input type="text" id="title" placeholder="Proje Başlığı">
-  <textarea id="embed" placeholder="Yerleştirme kodu"></textarea>
-  <button onclick="createProject()">Oluştur</button>
-  <button onclick="hideForm()">İptal</button>
-</div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    // Firebase config seninkiyle aynı olmalı
+    const firebaseConfig = {
+      apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
+      authDomain: "scaty-9bd07.firebaseapp.com",
+      databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "scaty-9bd07",
+      storageBucket: "scaty-9bd07.firebasestorage.app",
+      messagingSenderId: "649442785955",
+      appId: "1:649442785955:web:cb7405c5c0bd88907e9d16",
+      measurementId: "G-LLYXBZZX0X"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-<div id="projects"></div>
+    const projectsDiv = document.getElementById("projects");
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalUser = document.getElementById("modalUser");
+    const modalEmbed = document.getElementById("modalEmbed");
+    const likeButton = document.getElementById("likeButton");
+    const likeCount = document.getElementById("likeCount");
+    const messagesBox = document.getElementById("messagesBox");
+    const messageInput = document.getElementById("messageInput");
 
-<footer>
-  Bu web site kodlanarak yapılmıştır • Domain: GitHub Pages • Sunucu: Firebase • Sahibi: lattesiber ©2025
-</footer>
+    let currentProjectKey = null;
 
-<!-- Firebase v8 -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBeIlybkEY-iOMjiR2-Y7hjLXDqn3umZ9k",
-  authDomain: "scaty-9bd07.firebaseapp.com",
-  databaseURL: "https://scaty-9bd07-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "scaty-9bd07",
-  storageBucket: "scaty-9bd07.appspot.com",
-  messagingSenderId: "649442785955",
-  appId: "1:649442785955:web:cb7405c5c0bd88907e9d16"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-const projectsDiv = document.getElementById("projects");
-
-function showForm(){ document.getElementById("projectForm").style.display="block"; }
-function hideForm(){ document.getElementById("projectForm").style.display="none"; }
-
-function createProject(){
-  const username = document.getElementById("username").value;
-  const title = document.getElementById("title").value;
-  const embed = document.getElementById("embed").value;
-  if(!username||!title||!embed){ alert("Tüm alanları doldurun!"); return; }
-  const newProjectRef = db.ref('projects').push();
-  newProjectRef.set({username,title,embed,likes:0});
-  hideForm();
-  document.getElementById("username").value="";
-  document.getElementById("title").value="";
-  document.getElementById("embed").value="";
-}
-
-db.ref('projects').on('value', snapshot=>{
-  projectsDiv.innerHTML="";
-  const data = snapshot.val();
-  if(data){
-    Object.keys(data).forEach(key=>{
-      const project = data[key];
-      const div = document.createElement("div");
-      div.className="project-card";
-      div.innerHTML=`
-        <h3>${project.title}</h3>
-        <p>@${project.username}</p>
-        <div>${project.embed}</div>
-        <button onclick="likeProject('${key}',${project.likes})">❤️ ${project.likes}</button>
-        <button onclick="toggleMessages('${key}')">Mesajlar</button>
-        <div class="messages-area" id="messages-${key}">
-          <div class="messages-list" id="messages-list-${key}"></div>
-          <div class="message-form">
-            <input id="msg-user-${key}" placeholder="Scratch ismin">
-            <input id="msg-text-${key}" placeholder="Mesaj yaz...">
-            <button onclick="sendMessage('${key}')">Gönder</button>
-          </div>
-        </div>
-      `;
-      projectsDiv.appendChild(div);
-      loadMessages(key);
+    // Projeleri listele
+    db.ref("projects").on("value", snapshot=>{
+      projectsDiv.innerHTML="";
+      const data = snapshot.val();
+      if(data){
+        Object.keys(data).forEach(key=>{
+          const p = data[key];
+          let div=document.createElement("div");
+          div.className="project-card";
+          div.innerHTML=`<h3>${p.title}</h3><p>@${p.username}</p>`;
+          div.onclick=()=>openModal(p,key);
+          projectsDiv.appendChild(div);
+        });
+      }
     });
-  }
-});
 
-function likeProject(key,likes){
-  db.ref('projects/'+key).update({likes:likes+1});
-}
+    // Modal aç
+    function openModal(project,key){
+      currentProjectKey = key;
+      modalTitle.innerText=project.title;
+      modalUser.innerText=project.username;
+      modalEmbed.innerHTML=project.yerleştirme;
+      modal.style.display="flex";
 
-function toggleMessages(key){
-  const area=document.getElementById("messages-"+key);
-  area.style.display = (area.style.display==="flex") ? "none" : "flex";
-}
-
-function sendMessage(key){
-  const user=document.getElementById("msg-user-"+key).value;
-  const text=document.getElementById("msg-text-"+key).value;
-  if(!user||!text){ alert("İsim ve mesaj gerekli!"); return; }
-  const msgRef=db.ref("messages/"+key).push();
-  msgRef.set({user,text,timestamp:Date.now()});
-  document.getElementById("msg-text-"+key).value="";
-}
-
-function loadMessages(key){
-  db.ref("messages/"+key).on("value",snap=>{
-    const list=document.getElementById("messages-list-"+key);
-    list.innerHTML="";
-    const data=snap.val();
-    if(data){
-      Object.values(data).forEach(m=>{
-        const p=document.createElement("p");
-        p.textContent=`${m.user}: ${m.text}`;
-        list.appendChild(p);
+      // beğeni canlı
+      db.ref("projects/"+key+"/likes").on("value", snap=>{
+        likeCount.innerText = snap.val() || 0;
       });
+
+      // mesajları canlı çek
+      db.ref("messages/"+key).on("value", snap=>{
+        messagesBox.innerHTML="";
+        const msgs=snap.val();
+        if(msgs){
+          Object.values(msgs).forEach(m=>{
+            let p=document.createElement("p");
+            p.innerText=m.user+": "+m.text;
+            messagesBox.appendChild(p);
+          });
+        }
+      });
+
+      likeButton.onclick=()=>{
+        db.ref("projects/"+key+"/likes").transaction(likes=>{
+          return (likes||0)+1;
+        });
+      };
     }
-  });
-}
-</script>
+
+    function closeModal(){
+      modal.style.display="none";
+      modalEmbed.innerHTML="";
+      messagesBox.innerHTML="";
+      currentProjectKey=null;
+    }
+
+    function sendMessage(){
+      if(!currentProjectKey) return;
+      let text=messageInput.value.trim();
+      if(text==="") return;
+      let user=prompt("Scratch kullanıcı adın:");
+      if(!user) return;
+      db.ref("messages/"+currentProjectKey).push({
+        user,text
+      });
+      messageInput.value="";
+    }
+  </script>
 </body>
 </html>
