@@ -24,6 +24,20 @@
     text-align:center;
     font-size:1.5rem;
   }
+  /* Yeni eklenen kutu */
+  #infoBox {
+    background: rgba(0, 123, 255, 0.9);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1rem;
+  }
+  #infoBox a {
+    color: yellow;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+  }
   #projectForm, #projects {
     max-width: 600px;
     margin: 20px auto;
@@ -67,6 +81,12 @@
 
 <header>SCATY – Scratch Projelerini Paylaş!</header>
 
+<!-- Yeni mavi kutu -->
+<div id="infoBox">
+  scaty kullanmasını bilmediğinde için buraya tıklayın ve 1.bölümü okuyun <br>
+  <a href="https://sites.google.com/view/scaty-sss/ana-sayfa" target="_blank">SCATY SSS</a>
+</div>
+
 <div id="projectForm">
   <h3>Yeni Proje</h3>
   <input type="text" id="username" placeholder="Kullanıcı Adı">
@@ -93,6 +113,7 @@
   </div>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
